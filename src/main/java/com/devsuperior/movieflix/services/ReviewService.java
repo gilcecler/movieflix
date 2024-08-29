@@ -1,6 +1,7 @@
 package com.devsuperior.movieflix.services;
 
 import com.devsuperior.movieflix.dto.ReviewDTO;
+import com.devsuperior.movieflix.entities.Movie;
 import com.devsuperior.movieflix.entities.Review;
 import com.devsuperior.movieflix.entities.User;
 import com.devsuperior.movieflix.repositories.MovieRepository;
@@ -23,25 +24,43 @@ public class ReviewService {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private UserService userService;
 
-
-    @Transactional
-    public ReviewDTO saveReview(ReviewDTO reviewDTO) {
+    @Transactional(readOnly = true)
+    public ReviewDTO saveReview(ReviewDTO dto) {
         try {
-            Review newReview = new Review();
-            copyDtoToEntity(reviewDTO, newReview);
-            return new ReviewDTO(newReview);
+            Review entity = new Review();
+            User user = new User();
+            user = authService.authenticated();
+            copyEntityToDTO(user, entity, dto);
+            entity = reviewRepository.save(entity);
+            return new ReviewDTO(entity);
         } catch (RuntimeException e) {
             throw new UnauthorizedException("Unauthorized User");
         }
+
     }
 
-    private void copyDtoToEntity(ReviewDTO reviewDTO, Review reviewEntity) {
-        User user = authService.authenticated();
-        reviewEntity.setId(reviewDTO.getId());
-        reviewEntity.setText(reviewDTO.getText());
-        reviewEntity.setMovie(movieRepository.getReferenceById(reviewDTO.getMovieId()));
-        reviewEntity.setUser(user);
-        reviewRepository.save(reviewEntity);
+    public void copyEntityToDTO(User user, Review entity, ReviewDTO dto) {
+
+        entity.setText(dto.getText());
+
+        Movie movie = movieRepository.getReferenceById(dto.getMovieId());
+        entity.setMovie(movie);
+
+        user.setId(userService.getProfile().getId());
+        user.setName(userService.getProfile().getName());
+        user.setEmail(userService.getProfile().getEmail());
+        entity.setUser(user);
     }
+
+//    private void copyDtoToEntity(ReviewDTO reviewDTO, Review reviewEntity) {
+//        User user = authService.authenticated();
+//        reviewEntity.setId(reviewDTO.getId());
+//        reviewEntity.setText(reviewDTO.getText());
+//        reviewEntity.setMovie(movieRepository.getReferenceById(reviewDTO.getMovieId()));
+//        reviewEntity.setUser(user);
+//        reviewRepository.save(reviewEntity);
+//    }
 }

@@ -1,8 +1,11 @@
 package com.devsuperior.movieflix.dto;
 
 import com.devsuperior.movieflix.entities.Review;
+import com.devsuperior.movieflix.entities.User;
+import com.devsuperior.movieflix.services.AuthService;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ReviewDTO {
 
@@ -18,23 +21,25 @@ public class ReviewDTO {
 
 	private String userName;
     private String userEmail;
-
-	public ReviewDTO(){
-
+	public ReviewDTO() {
 	}
 
-	public ReviewDTO(Long id, String text, Long movieId, Long userId) {
+	public ReviewDTO(Long id, String text, Long movieId, Long userId, String userName, String userEmail) {
 		this.id = id;
 		this.text = text;
 		this.movieId = movieId;
 		this.userId = userId;
+		this.userName = userName;
+		this.userEmail = userEmail;
 	}
 
 	public ReviewDTO(Review entity) {
-		this.id = entity.getId();
-		this.text = entity.getText();
-		this.movieId = entity.getMovie().getId();
-		this.userId = entity.getUser().getId();
+		id = entity.getId();
+		text = entity.getText();
+		movieId =  entity.getMovie().getId();
+		userId = entity.getUser().getId();
+		userName = entity.getUser().getName();
+		userEmail = entity.getUser().getEmail();
 	}
 
 
