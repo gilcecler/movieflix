@@ -15,8 +15,13 @@ public class ReviewDTO {
     private Long movieId;    
     
     private Long userId;
-    private String userName;
+
+	private String userName;
     private String userEmail;
+
+	public ReviewDTO(){
+
+	}
 
 	public ReviewDTO(Long id, String text, Long movieId, Long userId) {
 		this.id = id;
