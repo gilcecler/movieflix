@@ -7,5 +7,5 @@
 
 
 ###  Aprovação
-<img src="image.png" alt="desafio-cap04">
+<img src="desafio-cap04.png" alt="desafio-cap04">
 
